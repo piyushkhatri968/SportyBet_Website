@@ -8,6 +8,7 @@ const Users = () => {
   const [deleteModelOpen, setDeleteModelOpen] = useState(false);
   const [users, setUsers] = useState({});
   const [addUserModel, setaddUserModel] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const formatData = (timeStamp) => {
     const date = new Date(timeStamp);
@@ -24,11 +25,14 @@ const Users = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const getUsers = async () => {
       try {
         const response = await axios.get(`${backend_URL}/admin/getAllUsers`);
         setUsers(response.data.allUsers); // Logging actual data, not the Promise
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching users:", error);
       }
     };
@@ -71,49 +75,58 @@ const Users = () => {
           </div>
         </header>
         {/* Table */}
-        {users && users.length > 0 ? (
-          <div className="mt-6 overflow-auto bg-white rounded-md shadow-lg text-sm sm:text-base">
-            <table className="min-w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="px-4 py-2 text-left">ID</th>
-                  <th className="px-4 py-2 text-left">Name</th>
-                  <th className="px-4 py-2 text-left">Username</th>
-                  <th className="px-4 py-2 text-left">Email</th>
-
-                  <th className="px-4 py-2 text-left">Subscription Type</th>
-                  <th className="px-4 py-2 text-left">Registered On</th>
-                  <th className="px-4 py-2 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, index) => (
-                  <tr
-                    key={user._id}
-                    className={(index + 1) % 2 === 0 ? "bg-gray-50" : ""}
-                  >
-                    <td className="px-4 py-2">{index + 1}</td>
-                    <td className="px-4 py-2">{user.name}</td>
-                    <td className="px-4 py-2">{user.username}</td>
-                    <td className={`px-4 py-2`}>{user.email}</td>
-
-                    <td className="px-4 py-2">{user.subscription}</td>
-                    <td className="px-4 py-2">{formatData(user.createdAt)}</td>
-                    <td className="px-4 py-2">
-                      <FaRegTrashAlt
-                        className="text-red-600 cursor-pointer"
-                        onClick={() => handleDeleteModel(user._id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {loading ? (
+          <div className="text-center text-3xl font-semibold">Loading ...</div>
         ) : (
-          <h3 className="text-xl mt-5 font-medium">
-            No registered users found in library.
-          </h3>
+          <>
+            {" "}
+            {users && users.length > 0 ? (
+              <div className="mt-6 overflow-auto bg-white rounded-md shadow-lg text-sm sm:text-base">
+                <table className="min-w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="px-4 py-2 text-left">ID</th>
+                      <th className="px-4 py-2 text-left">Name</th>
+                      <th className="px-4 py-2 text-left">Username</th>
+                      <th className="px-4 py-2 text-left">Email</th>
+
+                      <th className="px-4 py-2 text-left">Subscription Type</th>
+                      <th className="px-4 py-2 text-left">Registered On</th>
+                      <th className="px-4 py-2 text-left">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user, index) => (
+                      <tr
+                        key={user._id}
+                        className={(index + 1) % 2 === 0 ? "bg-gray-50" : ""}
+                      >
+                        <td className="px-4 py-2">{index + 1}</td>
+                        <td className="px-4 py-2">{user.name}</td>
+                        <td className="px-4 py-2">{user.username}</td>
+                        <td className={`px-4 py-2`}>{user.email}</td>
+
+                        <td className="px-4 py-2">{user.subscription}</td>
+                        <td className="px-4 py-2">
+                          {formatData(user.createdAt)}
+                        </td>
+                        <td className="px-4 py-2">
+                          <FaRegTrashAlt
+                            className="text-red-600 cursor-pointer"
+                            onClick={() => handleDeleteModel(user._id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <h3 className="text-xl mt-5 font-medium">
+                No registered users found in library.
+              </h3>
+            )}
+          </>
         )}
       </main>
       {deleteModelOpen && (
