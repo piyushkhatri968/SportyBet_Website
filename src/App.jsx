@@ -8,6 +8,7 @@ import AllUsers from "./Components/AllUsers";
 import AddUser from "./Components/AddUser";
 import ActiveUsers from "./Components/ActiveUsers";
 import DisableUsers from "./Components/DisableUsers";
+import ExpiredUsers from "./Components/ExpiredUsers";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/addUser" element={<AddUser />} />
           <Route path="/activeUsers" element={<ActiveUsers />} />
           <Route path="/disableUsers" element={<DisableUsers />} />
+          <Route path="/expiredUsers" element={<ExpiredUsers />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

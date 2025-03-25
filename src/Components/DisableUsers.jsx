@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
-import { Link } from "react-router-dom";
-import { MdOutlineMoreTime } from "react-icons/md";
+import { TiTick } from "react-icons/ti";
 
 const DisableUsers = () => {
   const [activeModelOpen, setActiveModelOpen] = useState(false);
   const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
   const [loading, setLoading] = useState(false);
   const [userID, setUserID] = useState("");
-
-  const [expiryDate, setExpiryDate] = useState("");
 
   // Function to format date
   const formatDataTime = (timeStamp) => {
@@ -50,8 +46,7 @@ const DisableUsers = () => {
   const handleActiveUser = async (id) => {
     try {
       const response = await axios.put(
-        `${backend_URL}/admin/activeUserAccount/${id}`,
-        { expiryDate },
+        `${backend_URL}/admin/activeUserAccountStatus/${id}`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -71,14 +66,8 @@ const DisableUsers = () => {
         {/* Header */}
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center mt-3 px-1 md:px-3">
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
-            Registered Users
+            Disabled Users
           </h2>
-          <Link
-            to="/adduser"
-            className="border py-1.5 px-4 rounded-md bg-black text-white cursor-pointer"
-          >
-            Add User
-          </Link>
         </header>
 
         {/* Table */}
@@ -127,7 +116,7 @@ const DisableUsers = () => {
                       {user.accountStatus}
                     </td>
                     <td className="px-4 py-2">
-                      <MdOutlineMoreTime
+                      <TiTick
                         size={24}
                         className="text-green-600 cursor-pointer"
                         onClick={() => handleActiveModel(user._id)}
@@ -140,41 +129,20 @@ const DisableUsers = () => {
           </div>
         ) : (
           <h3 className="text-xl mt-5 font-medium">
-            No registered users found in the library.
+            No disabled users found in the library.
           </h3>
         )}
       </main>
 
-      {/* Delete Confirmation Modal */}
       {activeModelOpen && (
         <div
           className="fixed inset-0 p-5 flex items-center justify-center z-50"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
         >
           <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 p-6 h-64 flex flex-col items-center justify-center text-center">
-            <h2 className="text-xl font-semibold">Active User</h2>
-            <div className="mb-4 w-full">
-              <label
-                htmlFor=""
-                className="block text-gray-900 font-medium mt-2 text-lg"
-              >
-                Expiry
-              </label>
-              <select
-                name="expiryDate"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md mt-1"
-              >
-                <option value="none">Select Expiry</option>
-                <option value={7}>1 Week</option>
-                <option value={14}>2 Week</option>
-                <option value={21}>3 Week</option>
-                <option value={30}>1 Month</option>
-                <option value={60}>2 Months</option>
-                <option value={90}>3 Months</option>
-              </select>
-            </div>
+            <h2 className="text-xl font-semibold">
+              Are you sure you want to active this user?
+            </h2>
             <div className="flex gap-4 mt-4 items-center justify-center">
               <button
                 onClick={() => setActiveModelOpen(false)}
@@ -184,9 +152,9 @@ const DisableUsers = () => {
               </button>
               <button
                 onClick={() => handleActiveUser(userID)}
-                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
+                className="bg-green-600 text-white px-4 py-2 rounded-md cursor-pointer"
               >
-                Active
+                Yes
               </button>
             </div>
           </div>

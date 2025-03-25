@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col md:flex-row gap-4 px-4 mt-4 items-center justify-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2 mt-4 md:px-6">
       <Link
         to="/users"
         className="bg-black w-full text-white py-3 px-4 rounded-md text-xl font-semibold text-center"
@@ -27,6 +27,12 @@ const Dashboard = () => {
         className="bg-black w-full text-white py-3 px-4 rounded-md text-xl font-semibold text-center"
       >
         Add User
+      </Link>
+      <Link
+        to="/expiredUsers"
+        className="bg-black w-full text-white py-3 px-4 rounded-md text-xl font-semibold text-center"
+      >
+        Expired User
       </Link>
     </div>
   );
