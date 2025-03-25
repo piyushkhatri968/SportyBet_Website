@@ -5,6 +5,9 @@ import Dashboard from "./Pages/Dashboard";
 import Header from "./Layout/Header";
 import ProtectedRoute from "./ProtectedRoute";
 import AllUsers from "./Components/AllUsers";
+import AddUser from "./Components/AddUser";
+import ActiveUsers from "./Components/ActiveUsers";
+import DisableUsers from "./Components/DisableUsers";
 
 const App = () => {
   return (
@@ -15,6 +18,9 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/users" element={<AllUsers />} />
+          <Route path="/addUser" element={<AddUser />} />
+          <Route path="/activeUsers" element={<ActiveUsers />} />
+          <Route path="/disableUsers" element={<DisableUsers />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
 import { Link } from "react-router-dom";
+import { MdOutlineSyncDisabled } from "react-icons/md";
 
-const Users = () => {
-  const [deleteModelOpen, setDeleteModelOpen] = useState(false);
-  const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
+const ActiveUsers = () => {
+  const [disableModelOpen, setDisableModelOpen] = useState(false);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userID, setUserID] = useState("");
 
@@ -23,37 +23,34 @@ const Users = () => {
     const getUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backend_URL}/admin/getAllUsers`);
-        setUsers(response.data.allUsers);
+        const response = await axios.get(
+          `${backend_URL}/admin/getAllUsersByStatus`
+        );
+        setUsers(response.data.allActiveUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
-        setLoading(false); // ✅ Ensures loading state is updated correctly
+        setLoading(false);
       }
     };
     getUsers();
   }, []);
 
-  // Open Delete Confirmation Modal
-  const handleDeleteModel = (userId) => {
-    setDeleteModelOpen(true);
+  const handleDisableModel = (userId) => {
+    setDisableModelOpen(true);
     setUserID(userId);
   };
 
-  // Delete User Function
-  const deleteUser = async (id) => {
+  const handleDisableUser = async (id) => {
     try {
-      const response = await axios.delete(
-        `${backend_URL}/admin/deleteUser/${id}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+      const response = await axios.put(
+        `${backend_URL}/admin/updateUserAccountStatus/${id}`
       );
       alert(response.data.message);
-      setUsers(users.filter((user) => user._id !== id)); // ✅ FIXED: Proper filtering
-      setDeleteModelOpen(false);
+      setUsers(users.filter((user) => user._id !== id));
+      setDisableModelOpen(false);
     } catch (error) {
-      alert(error.response?.data?.message || "Error deleting user");
+      alert(error.response?.data?.message || "Error in disabling user");
       console.log(error);
     }
   };
@@ -110,19 +107,16 @@ const Users = () => {
                       {formatDataTime(user.createdAt)}
                     </td>
                     <td className="px-4 py-2">{formatDataTime(user.expiry)}</td>
-                    <td
-                      className={`px-4 py-2 ${
+                    <td className={`px-4 py-2 ${
                         user.accountStatus === "Active"
                           ? "text-green-600"
                           : "text-red-600"
-                      }`}
-                    >
-                      {user.accountStatus}
-                    </td>
+                      }`}>{user.accountStatus}</td>
                     <td className="px-4 py-2">
-                      <FaRegTrashAlt
-                        className="text-red-600 cursor-pointer"
-                        onClick={() => handleDeleteModel(user._id)}
+                      <MdOutlineSyncDisabled
+                        size={24}
+                        className="text-blue-600 cursor-pointer"
+                        onClick={() => handleDisableModel(user._id)}
                       />
                     </td>
                   </tr>
@@ -138,27 +132,27 @@ const Users = () => {
       </main>
 
       {/* Delete Confirmation Modal */}
-      {deleteModelOpen && (
+      {disableModelOpen && (
         <div
           className="fixed inset-0 p-5 flex items-center justify-center z-50"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
         >
           <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 p-6 h-64 flex flex-col items-center justify-center text-center">
             <h2 className="text-xl font-semibold">
-              Are you sure you want to delete this user?
+              Are you sure you want to disable this user?
             </h2>
             <div className="flex gap-4 mt-4 items-center justify-center">
               <button
-                onClick={() => setDeleteModelOpen(false)}
+                onClick={() => setDisableModelOpen(false)}
                 className="bg-gray-300 text-black px-4 py-2 rounded-md cursor-pointer"
               >
                 Cancel
               </button>
               <button
-                onClick={() => deleteUser(userID)}
+                onClick={() => handleDisableUser(userID)}
                 className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
               >
-                Delete
+                Yes
               </button>
             </div>
           </div>
@@ -168,4 +162,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default ActiveUsers;

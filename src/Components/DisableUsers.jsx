@@ -3,12 +3,15 @@ import axios from "axios";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
 import { Link } from "react-router-dom";
+import { MdOutlineMoreTime } from "react-icons/md";
 
-const Users = () => {
-  const [deleteModelOpen, setDeleteModelOpen] = useState(false);
+const DisableUsers = () => {
+  const [activeModelOpen, setActiveModelOpen] = useState(false);
   const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
   const [loading, setLoading] = useState(false);
   const [userID, setUserID] = useState("");
+
+  const [expiryDate, setExpiryDate] = useState("");
 
   // Function to format date
   const formatDataTime = (timeStamp) => {
@@ -23,8 +26,13 @@ const Users = () => {
     const getUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backend_URL}/admin/getAllUsers`);
-        setUsers(response.data.allUsers);
+        const response = await axios.get(
+          `${backend_URL}/admin/getAllUsersByStatus`,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        setUsers(response.data.allDisableUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -34,26 +42,25 @@ const Users = () => {
     getUsers();
   }, []);
 
-  // Open Delete Confirmation Modal
-  const handleDeleteModel = (userId) => {
-    setDeleteModelOpen(true);
+  const handleActiveModel = (userId) => {
+    setActiveModelOpen(true);
     setUserID(userId);
   };
 
-  // Delete User Function
-  const deleteUser = async (id) => {
+  const handleActiveUser = async (id) => {
     try {
-      const response = await axios.delete(
-        `${backend_URL}/admin/deleteUser/${id}`,
+      const response = await axios.put(
+        `${backend_URL}/admin/activeUserAccount/${id}`,
+        { expiryDate },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
       alert(response.data.message);
-      setUsers(users.filter((user) => user._id !== id)); // ✅ FIXED: Proper filtering
-      setDeleteModelOpen(false);
+      setUsers(users.filter((user) => user._id !== id));
+      setActiveModelOpen(false);
     } catch (error) {
-      alert(error.response?.data?.message || "Error deleting user");
+      alert(error.response?.data?.message || "Error in activating user");
       console.log(error);
     }
   };
@@ -120,9 +127,10 @@ const Users = () => {
                       {user.accountStatus}
                     </td>
                     <td className="px-4 py-2">
-                      <FaRegTrashAlt
-                        className="text-red-600 cursor-pointer"
-                        onClick={() => handleDeleteModel(user._id)}
+                      <MdOutlineMoreTime
+                        size={24}
+                        className="text-green-600 cursor-pointer"
+                        onClick={() => handleActiveModel(user._id)}
                       />
                     </td>
                   </tr>
@@ -138,27 +146,47 @@ const Users = () => {
       </main>
 
       {/* Delete Confirmation Modal */}
-      {deleteModelOpen && (
+      {activeModelOpen && (
         <div
           className="fixed inset-0 p-5 flex items-center justify-center z-50"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
         >
           <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 p-6 h-64 flex flex-col items-center justify-center text-center">
-            <h2 className="text-xl font-semibold">
-              Are you sure you want to delete this user?
-            </h2>
+            <h2 className="text-xl font-semibold">Active User</h2>
+            <div className="mb-4 w-full">
+              <label
+                htmlFor=""
+                className="block text-gray-900 font-medium mt-2 text-lg"
+              >
+                Expiry
+              </label>
+              <select
+                name="expiryDate"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md mt-1"
+              >
+                <option value="none">Select Expiry</option>
+                <option value={7}>1 Week</option>
+                <option value={14}>2 Week</option>
+                <option value={21}>3 Week</option>
+                <option value={30}>1 Month</option>
+                <option value={60}>2 Months</option>
+                <option value={90}>3 Months</option>
+              </select>
+            </div>
             <div className="flex gap-4 mt-4 items-center justify-center">
               <button
-                onClick={() => setDeleteModelOpen(false)}
+                onClick={() => setActiveModelOpen(false)}
                 className="bg-gray-300 text-black px-4 py-2 rounded-md cursor-pointer"
               >
                 Cancel
               </button>
               <button
-                onClick={() => deleteUser(userID)}
+                onClick={() => handleActiveUser(userID)}
                 className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
               >
-                Delete
+                Active
               </button>
             </div>
           </div>
@@ -168,4 +196,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default DisableUsers;
