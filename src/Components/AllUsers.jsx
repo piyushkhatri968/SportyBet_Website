@@ -61,7 +61,7 @@ const Users = () => {
   };
   return (
     <>
-      <main className="relative flex-1 p-6">
+      <main className="relative flex-1 px-1">
         {/* Sub Header */}
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
@@ -142,7 +142,7 @@ const Users = () => {
             <div className="flex gap-4 mt-4 items-center justify-center">
               <button
                 onClick={() => setDeleteModelOpen(false)}
-                className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                className="bg-gray-300 text-black px-4 py-2 rounded-md cursor-pointer"
               >
                 Cancel
               </button>
@@ -151,7 +151,7 @@ const Users = () => {
                   deleteUser(userID);
                   setDeleteModelOpen(false);
                 }}
-                className="bg-red-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
               >
                 Delete
               </button>
