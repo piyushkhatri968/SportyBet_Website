@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import axios from "axios";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
@@ -36,9 +36,17 @@ const Users = () => {
 
   // Open Delete Confirmation Modal
   const handleDeleteModel = (userId) => {
+    setUserID(() => {
+      console.log("Setting userID:", userId);
+      return userId;
+    });
     setDeleteModelOpen(true);
-    setUserID(userId);
   };
+  
+  // Debugging useEffect
+  useEffect(() => {
+    console.log("Selected userID:", userID);
+  }, [userID]);
 
   // Delete User Function
   const deleteUser = async (id) => {
