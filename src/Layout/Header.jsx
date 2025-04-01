@@ -14,7 +14,7 @@ const Header = () => {
           className="border py-1.5 px-4 rounded-md bg-black text-white cursor-pointer"
           onClick={() => logout()}
         >
-          logout
+          Logout
         </button>
       )}
     </div>

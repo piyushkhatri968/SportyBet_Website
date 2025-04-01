@@ -9,6 +9,7 @@ import AddUser from "./Components/AddUser";
 import ActiveUsers from "./Components/ActiveUsers";
 import DisableUsers from "./Components/DisableUsers";
 import ExpiredUsers from "./Components/ExpiredUsers";
+import IOSHomeScreen from "./Components/IOSHomeScreen";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/activeUsers" element={<ActiveUsers />} />
           <Route path="/disableUsers" element={<DisableUsers />} />
           <Route path="/expiredUsers" element={<ExpiredUsers />} />
+          <Route path="/IOSHomeScreen" element={<IOSHomeScreen />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

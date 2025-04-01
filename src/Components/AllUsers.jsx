@@ -42,7 +42,7 @@ const Users = () => {
     });
     setDeleteModelOpen(true);
   };
-  
+
   // Debugging useEffect
   useEffect(() => {
     console.log("Selected userID:", userID);
