@@ -1,44 +1,52 @@
+import axios from "axios";
 import { useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { MdUpload } from "react-icons/md"; // Upload icon
+import { MdUpload } from "react-icons/md";
+import { backend_URL } from "../config/config";
 
 const IOSHomeScreen = () => {
-  const [images, setImages] = useState({ 1: null, 2: null, 3: null });
-  const [files, setFiles] = useState({ 1: null, 2: null, 3: null });
+  const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null });
+  const [files, setFiles] = useState({ 1: null, 2: null, 3: null, 4: null });
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleImageChange = (event, id) => {
     const file = event.target.files[0];
     if (file) {
-      setImages((prev) => ({
-        ...prev,
-        [id]: URL.createObjectURL(file),
-      }));
-      setFiles((prev) => ({
-        ...prev,
-        [id]: file,
-      }));
+      setImages((prev) => ({ ...prev, [id]: URL.createObjectURL(file) }));
+      setFiles((prev) => ({ ...prev, [id]: file }));
     }
   };
 
   const handleUpload = async () => {
+    // Ensure all images are selected before making the request
+    if (!Object.values(files).every(file => file)) {
+      alert("Please select all 4 images before uploading!");
+      return;
+    }
+
     setUploading(true);
     setSuccess(false);
 
     const formData = new FormData();
     Object.keys(files).forEach((key) => {
-      if (files[key]) {
-        formData.append(`image${key}`, files[key]);
-      }
+      formData.append("images", files[key]); // Append all files
     });
 
     try {
-      // Simulating an API call
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Replace with actual API request
-      console.log("Uploading images...", formData);
+      const response = await axios.post(
+        `${backend_URL}/uploadImages`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
+      console.log(response.data);
       setSuccess(true);
+
+      // Cleanup selected images after successful upload
+      Object.keys(images).forEach(id => URL.revokeObjectURL(images[id]));
+      setImages({ 1: null, 2: null, 3: null, 4: null });
+      setFiles({ 1: null, 2: null, 3: null, 4: null });
     } catch (error) {
       console.error("Upload failed", error);
     } finally {
@@ -46,17 +54,14 @@ const IOSHomeScreen = () => {
     }
   };
 
-  // Check if all three images are selected
-  const allImagesSelected = Object.values(files).every((file) => file !== null);
-
   return (
-    <div className="flex flex-col items-center justify-center  p-6">
+    <div className="flex flex-col items-center justify-center p-6">
       <h1 className="md:text-3xl font-bold text-gray-800 mb-8 text-center text-2xl">
         Upload & Preview Images
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8">
-        {[1, 2, 3].map((id) => (
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-8">
+        {[1, 2, 3, 4].map((id) => (
           <div
             key={id}
             className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105"
@@ -88,12 +93,12 @@ const IOSHomeScreen = () => {
         ))}
       </div>
 
-      {/* Upload Button (Disabled Until All Images Selected) */}
+      {/* Upload Button (Disabled Until All Images Are Selected) */}
       <button
         onClick={handleUpload}
-        disabled={!allImagesSelected || uploading}
+        disabled={uploading || !Object.values(files).every(file => file)}
         className={`mt-6 flex items-center px-5 py-2 rounded-md text-white font-medium transition ${
-          !allImagesSelected || uploading
+          uploading || !Object.values(files).every(file => file)
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-green-500 hover:bg-green-600"
         }`}
