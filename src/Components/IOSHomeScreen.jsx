@@ -20,7 +20,7 @@ const IOSHomeScreen = () => {
 
   const handleUpload = async () => {
     // Ensure all images are selected before making the request
-    if (!Object.values(files).every(file => file)) {
+    if (!Object.values(files).every((file) => file)) {
       alert("Please select all 4 images before uploading!");
       return;
     }
@@ -44,7 +44,7 @@ const IOSHomeScreen = () => {
       setSuccess(true);
 
       // Cleanup selected images after successful upload
-      Object.keys(images).forEach(id => URL.revokeObjectURL(images[id]));
+      Object.keys(images).forEach((id) => URL.revokeObjectURL(images[id]));
       setImages({ 1: null, 2: null, 3: null, 4: null });
       setFiles({ 1: null, 2: null, 3: null, 4: null });
     } catch (error) {
@@ -96,9 +96,9 @@ const IOSHomeScreen = () => {
       {/* Upload Button (Disabled Until All Images Are Selected) */}
       <button
         onClick={handleUpload}
-        disabled={uploading || !Object.values(files).every(file => file)}
+        disabled={uploading || !Object.values(files).every((file) => file)}
         className={`mt-6 flex items-center px-5 py-2 rounded-md text-white font-medium transition ${
-          uploading || !Object.values(files).every(file => file)
+          uploading || !Object.values(files).every((file) => file)
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-green-500 hover:bg-green-600"
         }`}
