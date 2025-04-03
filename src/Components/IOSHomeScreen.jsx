@@ -19,40 +19,25 @@ const IOSHomeScreen = () => {
   };
 
   const handleUpload = async () => {
-    // Ensure all images are selected before making the request
-    if (!Object.values(files).every((file) => file)) {
-      alert("Please select all 4 images before uploading!");
-      return;
-    }
-
-    setUploading(true);
-    setSuccess(false);
-
     const formData = new FormData();
-    Object.keys(files).forEach((key) => {
-      formData.append("images", files[key]); // Append all files
+    
+    // Append files using the same field name as multer ("images")
+    Object.values(files).forEach((file) => {
+      formData.append("images", file); // Ensure this matches multer array field name
     });
-
+  
     try {
-      const response = await axios.post(
-        `${backend_URL}/uploadImages`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
+      const response = await axios.post(`${backend_URL}/uploadImages`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
       console.log(response.data);
-      setSuccess(true);
-
-      // Cleanup selected images after successful upload
-      Object.keys(images).forEach((id) => URL.revokeObjectURL(images[id]));
-      setImages({ 1: null, 2: null, 3: null, 4: null });
-      setFiles({ 1: null, 2: null, 3: null, 4: null });
     } catch (error) {
       console.error("Upload failed", error);
-    } finally {
-      setUploading(false);
     }
   };
+  
+  
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -93,7 +78,7 @@ const IOSHomeScreen = () => {
         ))}
       </div>
 
-      {/* Upload Button (Disabled Until All Images Are Selected) */}
+      {/* Upload Button */}
       <button
         onClick={handleUpload}
         disabled={uploading || !Object.values(files).every((file) => file)}
