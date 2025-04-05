@@ -5,8 +5,8 @@ import { MdUpload } from "react-icons/md";
 import { backend_URL } from "../config/config";
 
 const IOSHomeScreen = () => {
-  const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null });
-  const [files, setFiles] = useState({ 1: null, 2: null, 3: null, 4: null });
+  const [images, setImages] = useState({ 1: null, 2: null, 3: null });
+  const [files, setFiles] = useState({ 1: null, 2: null, 3: null });
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -20,24 +20,27 @@ const IOSHomeScreen = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    
+
     // Append files using the same field name as multer ("images")
     Object.values(files).forEach((file) => {
       formData.append("images", file); // Ensure this matches multer array field name
     });
-  
+
     try {
-      const response = await axios.post(`${backend_URL}/uploadImages`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-  
+      const response = await axios.post(
+        `${backend_URL}/uploadImages`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
       console.log(response.data);
+      alert("Images uploaded");
     } catch (error) {
       console.error("Upload failed", error);
     }
   };
-  
-  
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -45,8 +48,8 @@ const IOSHomeScreen = () => {
         Upload & Preview Images
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-8">
-        {[1, 2, 3, 4].map((id) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8">
+        {[1, 2, 3].map((id) => (
           <div
             key={id}
             className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105"
@@ -81,9 +84,11 @@ const IOSHomeScreen = () => {
       {/* Upload Button */}
       <button
         onClick={handleUpload}
-        disabled={uploading || !Object.values(files).every((file) => file)}
+        disabled={
+          uploading || Object.values(files).every((file) => file === null)
+        }
         className={`mt-6 flex items-center px-5 py-2 rounded-md text-white font-medium transition ${
-          uploading || !Object.values(files).every((file) => file)
+          uploading || Object.values(files).every((file) => file === null)
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-green-500 hover:bg-green-600"
         }`}
