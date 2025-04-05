@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdUpload } from "react-icons/md";
 import { backend_URL } from "../config/config";
+import { FaL } from "react-icons/fa6";
 
 const IOSHomeScreen = () => {
   const [images, setImages] = useState({ 1: null, 2: null, 3: null });
@@ -27,6 +28,7 @@ const IOSHomeScreen = () => {
     });
 
     try {
+      setUploading(true);
       const response = await axios.post(
         `${backend_URL}/uploadImages`,
         formData,
@@ -34,10 +36,12 @@ const IOSHomeScreen = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+      setUploading(false);
 
       console.log(response.data);
       alert("Images uploaded");
     } catch (error) {
+      setUploading(false);
       console.error("Upload failed", error);
     }
   };
