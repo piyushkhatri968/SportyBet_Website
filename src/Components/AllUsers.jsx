@@ -83,6 +83,7 @@ const Users = () => {
                   <th className="px-4 py-2 text-left">Username</th>
                   <th className="px-4 py-2 text-left">Email</th>
                   <th className="px-4 py-2 text-left">Subscription Type</th>
+                  <th className="px-4 py-2 text-left">Role</th>
                   <th className="px-4 py-2 text-left">Registered On</th>
                   <th className="px-4 py-2 text-left">Expiry</th>
                   <th className="px-4 py-2 text-left">Status</th>
@@ -99,8 +100,15 @@ const Users = () => {
                     <td className="px-4 py-2">{user.name}</td>
                     <td className="px-4 py-2">{user.username}</td>
                     <td className="px-4 py-2">{user.email}</td>
-                    <td className="px-4 py-2">
-                      {user.subscription} : (2 Weeks)
+                    <td className="px-4 py-2">{user.subscription}</td>
+                    <td
+                      className={`px-4 py-2 ${
+                        user.role === "user"
+                          ? "text-blue-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {user.role.toUpperCase()}
                     </td>
                     <td className="px-4 py-2">
                       {formatDataTime(user.createdAt)}
