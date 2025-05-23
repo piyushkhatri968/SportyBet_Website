@@ -143,6 +143,21 @@ const AddUser = () => {
                 <option value={90}>3 Months</option>
               </select>
             </div>
+            <div className="mb-4">
+              <label htmlFor="" className="block text-gray-900 font-medium">
+                Role
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChangeInput}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md mt-1"
+              >
+                <option value="">Select Role</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
 
             <div className="mb-4 ">
               <label className="block text-gray-900 font-medium">

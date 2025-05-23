@@ -1,14 +1,12 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
 import { Link } from "react-router-dom";
 
 const Users = () => {
-  const [deleteModelOpen, setDeleteModelOpen] = useState(false);
   const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
   const [loading, setLoading] = useState(false);
-  const [userID, setUserID] = useState("");
 
   // Function to format date
   const formatDataTime = (timeStamp) => {
@@ -34,22 +32,13 @@ const Users = () => {
     getUsers();
   }, []);
 
-  // Open Delete Confirmation Modal
-  const handleDeleteModel = (userId) => {
-    setUserID(() => {
-      console.log("Setting userID:", userId);
-      return userId;
-    });
-    setDeleteModelOpen(true);
-  };
-
-  // Debugging useEffect
-  useEffect(() => {
-    console.log("Selected userID:", userID);
-  }, [userID]);
-
   // Delete User Function
   const deleteUser = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (!confirmDelete) return;
+
     try {
       const response = await axios.delete(
         `${backend_URL}/admin/deleteUser/${id}`,
@@ -59,7 +48,6 @@ const Users = () => {
       );
       alert(response.data.message);
       setUsers(users.filter((user) => user._id !== id)); // ✅ FIXED: Proper filtering
-      setDeleteModelOpen(false);
     } catch (error) {
       alert(error.response?.data?.message || "Error deleting user");
       console.log(error);
@@ -130,7 +118,7 @@ const Users = () => {
                     <td className="px-4 py-2">
                       <FaRegTrashAlt
                         className="text-red-600 cursor-pointer"
-                        onClick={() => handleDeleteModel(user._id)}
+                        onClick={() => deleteUser(user._id)}
                       />
                     </td>
                   </tr>
@@ -144,34 +132,6 @@ const Users = () => {
           </h3>
         )}
       </main>
-
-      {/* Delete Confirmation Modal */}
-      {deleteModelOpen && (
-        <div
-          className="fixed inset-0 p-5 flex items-center justify-center z-50"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
-        >
-          <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 p-6 h-64 flex flex-col items-center justify-center text-center">
-            <h2 className="text-xl font-semibold">
-              Are you sure you want to delete this user?
-            </h2>
-            <div className="flex gap-4 mt-4 items-center justify-center">
-              <button
-                onClick={() => setDeleteModelOpen(false)}
-                className="bg-gray-300 text-black px-4 py-2 rounded-md cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => deleteUser(userID)}
-                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

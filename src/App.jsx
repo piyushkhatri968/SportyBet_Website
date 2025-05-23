@@ -10,6 +10,7 @@ import ActiveUsers from "./Components/ActiveUsers";
 import DisableUsers from "./Components/DisableUsers";
 import ExpiredUsers from "./Components/ExpiredUsers";
 import IOSHomeScreen from "./Components/IOSHomeScreen";
+import MatchUploaded from "./Components/MatchUploaded";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/disableUsers" element={<DisableUsers />} />
           <Route path="/expiredUsers" element={<ExpiredUsers />} />
           <Route path="/IOSHomeScreen" element={<IOSHomeScreen />} />
+          <Route path="/match-uploaded" element={<MatchUploaded />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>
