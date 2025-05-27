@@ -21,7 +21,11 @@ const Users = () => {
     const getUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backend_URL}/admin/getAllUsers`);
+        const response = await axios.get(`${backend_URL}/admin/getAllUsers`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         setUsers(response.data.allUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
