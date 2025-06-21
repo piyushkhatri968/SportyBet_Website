@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaPuzzlePiece } from "react-icons/fa";
 import { backend_URL } from "../config/config";
 import { Link } from "react-router-dom";
 
 const Users = () => {
-  const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
+  const [deleteModelOpen, setDeleteModelOpen] = useState(false);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [userID, setUserID] = useState("");
 
-  // Function to format date
   const formatDataTime = (timeStamp) => {
     const date = new Date(timeStamp);
     return `${String(date.getDate()).padStart(2, "0")}-${String(
@@ -16,33 +17,27 @@ const Users = () => {
     ).padStart(2, "0")}-${String(date.getFullYear())}`;
   };
 
-  // Fetch Users from Backend
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backend_URL}/admin/getAllUsers`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(`${backend_URL}/admin/getAllUsers`);
         setUsers(response.data.allUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
-        setLoading(false); // ✅ Ensures loading state is updated correctly
+        setLoading(false);
       }
     };
     getUsers();
   }, []);
 
-  // Delete User Function
-  const deleteUser = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    if (!confirmDelete) return;
+  const handleDeleteModel = (userId) => {
+    setUserID(userId);
+    setDeleteModelOpen(true);
+  };
 
+  const deleteUser = async (id) => {
     try {
       const response = await axios.delete(
         `${backend_URL}/admin/deleteUser/${id}`,
@@ -51,17 +46,16 @@ const Users = () => {
         }
       );
       alert(response.data.message);
-      setUsers(users.filter((user) => user._id !== id)); // ✅ FIXED: Proper filtering
+      setUsers(users.filter((user) => user._id !== id));
+      setDeleteModelOpen(false);
     } catch (error) {
       alert(error.response?.data?.message || "Error deleting user");
-      console.log(error);
     }
   };
 
   return (
     <>
       <main className="relative flex-1 px-1">
-        {/* Header */}
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center mt-3 px-1 md:px-3">
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
             Registered Users
@@ -74,7 +68,6 @@ const Users = () => {
           </Link>
         </header>
 
-        {/* Table */}
         {loading ? (
           <div className="text-center text-3xl font-semibold">Loading ...</div>
         ) : users.length > 0 ? (
@@ -87,7 +80,7 @@ const Users = () => {
                   <th className="px-4 py-2 text-left">Username</th>
                   <th className="px-4 py-2 text-left">Email</th>
                   <th className="px-4 py-2 text-left">Subscription Type</th>
-                  <th className="px-4 py-2 text-left">Role</th>
+                  <th>Addons</th>
                   <th className="px-4 py-2 text-left">Registered On</th>
                   <th className="px-4 py-2 text-left">Expiry</th>
                   <th className="px-4 py-2 text-left">Status</th>
@@ -104,19 +97,22 @@ const Users = () => {
                     <td className="px-4 py-2">{user.name}</td>
                     <td className="px-4 py-2">{user.username}</td>
                     <td className="px-4 py-2">{user.email}</td>
-                    <td className="px-4 py-2">{user.subscription}</td>
-                    <td
-                      className={`px-4 py-2 ${
-                        user.role === "user"
-                          ? "text-blue-600"
-                          : "text-green-600"
-                      }`}
-                    >
-                      {user.role.toUpperCase()}
+                    <td className="px-4 py-2">
+                      {user.subscription} : (2 Weeks)
+                    </td>
+                    <td>
+                      <Link
+                        to={`/user-addons/${user._id}`}
+                        className="flex items-center gap-1 text-white bg-[#333] hover:bg-black px-2 py-1 rounded text-xs"
+                        title="Manage Addons"
+                      >
+                        Addons
+                      </Link>
                     </td>
                     <td className="px-4 py-2">
                       {formatDataTime(user.createdAt)}
                     </td>
+
                     <td className="px-4 py-2">{formatDataTime(user.expiry)}</td>
                     <td
                       className={`px-4 py-2 ${
@@ -127,11 +123,13 @@ const Users = () => {
                     >
                       {user.accountStatus}
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 flex gap-3 items-center">
                       <FaRegTrashAlt
-                        className="text-red-600 cursor-pointer"
-                        onClick={() => deleteUser(user._id)}
+                        title="Delete User"
+                        className="text-red-600 cursor-pointer hover:scale-110"
+                        onClick={() => handleDeleteModel(user._id)}
                       />
+                      
                     </td>
                   </tr>
                 ))}
@@ -144,6 +142,33 @@ const Users = () => {
           </h3>
         )}
       </main>
+
+      {deleteModelOpen && (
+        <div
+          className="fixed inset-0 p-5 flex items-center justify-center z-50"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+        >
+          <div className="w-full bg-white rounded-lg shadow-lg md:w-1/3 p-6 h-64 flex flex-col items-center justify-center text-center">
+            <h2 className="text-xl font-semibold">
+              Are you sure you want to delete this user?
+            </h2>
+            <div className="flex gap-4 mt-4 items-center justify-center">
+              <button
+                onClick={() => setDeleteModelOpen(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded-md cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteUser(userID)}
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

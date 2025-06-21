@@ -40,12 +40,13 @@ const Dashboard = () => {
       >
         Update Home Screen
       </Link>
-      <Link
+       <Link
         to="/match-uploaded"
         className="bg-black w-full text-white py-3 px-4 rounded-md text-xl font-semibold text-center"
       >
         Match Uploaded
       </Link>
+      
     </div>
   );
 };
