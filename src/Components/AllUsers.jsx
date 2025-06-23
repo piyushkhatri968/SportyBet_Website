@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaRegTrashAlt, FaPuzzlePiece } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { backend_URL } from "../config/config";
 import { Link } from "react-router-dom";
 
@@ -50,6 +50,34 @@ const Users = () => {
       setDeleteModelOpen(false);
     } catch (error) {
       alert(error.response?.data?.message || "Error deleting user");
+    }
+  };
+
+  const toggleUserStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === "Active" ? "Hold" : "Active";
+    const confirmMessage =
+      currentStatus === "Active"
+        ? "Are you sure you want to deactivate this user?"
+        : "Are you sure you want to activate this user again?";
+
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      const response = await axios.patch(
+        `${backend_URL}/update-status/${id}`,
+        { status: newStatus },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      alert(response.data.message);
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === id ? { ...user, accountStatus: newStatus } : user
+        )
+      );
+    } catch (error) {
+      alert(error.response?.data?.error || "Error updating user status");
     }
   };
 
@@ -112,16 +140,22 @@ const Users = () => {
                     <td className="px-4 py-2">
                       {formatDataTime(user.createdAt)}
                     </td>
-
-                    <td className="px-4 py-2">{formatDataTime(user.expiry)}</td>
-                    <td
-                      className={`px-4 py-2 ${
-                        user.accountStatus === "Active"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {user.accountStatus}
+                    <td className="px-4 py-2">
+                      {formatDataTime(user.expiry)}
+                    </td>
+                    <td className="px-4 py-2">
+                      <button
+                        onClick={() =>
+                          toggleUserStatus(user._id, user.accountStatus)
+                        }
+                        className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                          user.accountStatus === "Active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {user.accountStatus === "Active" ?"Active": "Deactive"}
+                      </button>
                     </td>
                     <td className="px-4 py-2 flex gap-3 items-center">
                       <FaRegTrashAlt
@@ -129,7 +163,6 @@ const Users = () => {
                         className="text-red-600 cursor-pointer hover:scale-110"
                         onClick={() => handleDeleteModel(user._id)}
                       />
-                      
                     </td>
                   </tr>
                 ))}
