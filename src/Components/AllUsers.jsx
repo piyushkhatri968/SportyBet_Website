@@ -106,6 +106,7 @@ const Users = () => {
                   <th className="px-4 py-2 text-left">ID</th>
                   <th className="px-4 py-2 text-left">Name</th>
                   <th className="px-4 py-2 text-left">Username</th>
+                  <th className="px-4 py-2 text-left">Number</th>
                   <th className="px-4 py-2 text-left">Email</th>
                   <th className="px-4 py-2 text-left">Subscription Type</th>
                   <th>Addons</th>
@@ -124,6 +125,7 @@ const Users = () => {
                     <td className="px-4 py-2">{index + 1}</td>
                     <td className="px-4 py-2">{user.name}</td>
                     <td className="px-4 py-2">{user.username}</td>
+                    <td className="px-4 py-2">{user.mobileNumber}</td>
                     <td className="px-4 py-2">{user.email}</td>
                     <td className="px-4 py-2">
                       {user.subscription} : (2 Weeks)
