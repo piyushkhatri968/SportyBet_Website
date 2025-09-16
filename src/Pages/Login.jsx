@@ -6,13 +6,8 @@ import { useAuth } from "../Context/AuthContext.jsx";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
+  const { setAuthUser } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -41,13 +36,17 @@ const Login = () => {
         `${backend_URL}/admin/login`,
         formData,
         {
+          withCredentials: true,
+        },
+        {
           headers: { "Content-Type": "application/json" },
         }
       );
 
       setError(null);
       setSuccessMessage(response.data.message);
-      login(response.data.token);
+      setAuthUser(response.data?.user);
+      navigate("/");
       // setTimeout(() => {
       //   navigate("/");
       // }, 500);

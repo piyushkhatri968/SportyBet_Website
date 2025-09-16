@@ -1,44 +1,42 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { backend_URL } from "../config/config.js";
+import PageLoader from "../Components/PageLoader.jsx";
 
-// Create Auth Context
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-// Auth Provider Component
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [authUser, setAuthUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUser({ token });
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(
+        `${backend_URL}/auth/me`,
+        {
+          withCredentials: true,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      setAuthUser(res.data.user);
+    } catch (err) {
+      setAuthUser(null);
+    } finally {
+      setAuthLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
-  // Login function
-  const login = (token) => {
-    localStorage.setItem("token", token);
-    setUser({ token });
-    navigate("/"); // Redirect to home after login
-  };
-
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    navigate("/login");
-  };
-
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ authUser, setAuthUser, authLoading }}>
+      {authLoading ? <PageLoader /> : children}
     </AuthContext.Provider>
   );
 };
 
-// Hook to use Auth Context
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
