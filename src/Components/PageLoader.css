@@ -1,0 +1,41 @@
+.loader-circle {
+  position: absolute;
+  width: 200px;  /* adjust */
+  height: 200px;
+  border: 6px solid #A6ADBB;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 2s linear infinite; /* change to spin-slow / spin-fast */
+}
+
+.loader-logo {
+  width: 96px;  /* same as w-24 */
+  border-radius: 50%;
+  user-select: none;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Pulse Animation (scale up & down) */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Spin Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-slow {
+  animation: spin 4s linear infinite;
+}
+
+.spin-fast {
+  animation: spin 1s linear infinite;
+}
