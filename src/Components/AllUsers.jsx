@@ -128,7 +128,7 @@ const Users = () => {
                     <td className="px-4 py-2">{user.mobileNumber}</td>
                     <td className="px-4 py-2">{user.email}</td>
                     <td className="px-4 py-2">
-                      {user.subscription} : (2 Weeks)
+                      {user.subscription} : {user?.expiryPeriod}
                     </td>
                     <td>
                       <Link

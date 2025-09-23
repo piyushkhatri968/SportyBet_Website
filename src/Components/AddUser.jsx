@@ -16,6 +16,7 @@ const AddUser = () => {
     password: "",
     mobileNumber: "",
     expiryDate: "",
+    expiryPeriod: "",
     subscription: "Basic",
     role: "user",
   });
@@ -25,37 +26,38 @@ const AddUser = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleAddUser = async (e) => {
-  e.preventDefault();
-  try {
-    setAddUserErrorMessage(null);
-    setAddUserSuccessMessage(null);
-    setLoading(true);
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    try {
+      setAddUserErrorMessage(null);
+      setAddUserSuccessMessage(null);
+      setLoading(true);
 
-    const now = new Date();
-    const daysToAdd = parseInt(formData.expiryDate);
-    const expiryDateISO = new Date(now.setDate(now.getDate() + daysToAdd)).toISOString();
+      const now = new Date();
+      const daysToAdd = parseInt(formData.expiryDate);
+      const expiryDateISO = new Date(now.setDate(now.getDate() + daysToAdd)).toISOString();
 
-    const payload = {
-      ...formData,
-      expiryDate: expiryDateISO,
-    };
+      const payload = {
+        ...formData,
+        expiryDate: expiryDateISO,
+        expiryPeriod: formData.expiryDate
+      };
 
-    const res = await axios.post(`${backend_URL}/register`, payload, {
-      headers: { "Content-Type": "application/json" },
-    });
+      const res = await axios.post(`${backend_URL}/register`, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-    setAddUserSuccessMessage(res.data.message);
-    setLoading(false);
-    setTimeout(() => navigate("/users"), 1000);
-  } catch (error) {
-    setAddUserSuccessMessage(null);
-    setAddUserErrorMessage(
-      error.response?.data?.message || "Unknown error occurred."
-    );
-    setLoading(false);
-  }
-};
+      setAddUserSuccessMessage(res.data.message);
+      setLoading(false);
+      setTimeout(() => navigate("/users"), 1000);
+    } catch (error) {
+      setAddUserSuccessMessage(null);
+      setAddUserErrorMessage(
+        error.response?.data?.message || "Unknown error occurred."
+      );
+      setLoading(false);
+    }
+  };
 
 
   return (

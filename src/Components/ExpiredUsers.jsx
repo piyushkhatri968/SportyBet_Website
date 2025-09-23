@@ -6,7 +6,7 @@ import { FcExpired } from "react-icons/fc";
 
 const DisableUsers = () => {
   const [activeModelOpen, setActiveModelOpen] = useState(false);
-  const [users, setUsers] = useState([]); // ✅ FIXED: Initialized as an array
+  const [users, setUsers] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [userID, setUserID] = useState("");
 
@@ -35,7 +35,7 @@ const DisableUsers = () => {
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
-        setLoading(false); // ✅ Ensures loading state is updated correctly
+        setLoading(false);
       }
     };
     getUsers();
@@ -160,8 +160,8 @@ const DisableUsers = () => {
               >
                 <option value="none">Select Expiry</option>
                 <option value={7}>1 Week</option>
-                <option value={14}>2 Week</option>
-                <option value={21}>3 Week</option>
+                <option value={14}>2 Weeks</option>
+                <option value={21}>3 Weeks</option>
                 <option value={30}>1 Month</option>
                 <option value={60}>2 Months</option>
                 <option value={90}>3 Months</option>
