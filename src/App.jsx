@@ -12,6 +12,7 @@ import ExpiredUsers from "./Components/ExpiredUsers";
 import IOSHomeScreen from "./Components/IOSHomeScreen";
 import MatchUploaded from "./Components/MatchUploaded";
 import UserAddon from "./Components/UserAddon";
+import PasswordChangeRequests from "./Components/PasswordChangeRequests";
 import { useAuth } from "./Context/AuthContext";
 import PageLoader from "./Components/PageLoader";
 
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/IOSHomeScreen" element={<IOSHomeScreen />} />
           <Route path="/match-uploaded" element={<MatchUploaded />} />
           <Route path="/user-addons/:userId" element={<UserAddon />} />
+          <Route path="/password-change-requests" element={<PasswordChangeRequests />} />
         </Route>
         {/* Public Route */}
         <Route

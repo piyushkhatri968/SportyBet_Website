@@ -46,6 +46,12 @@ const Dashboard = () => {
       >
         Match Uploaded
       </Link>
+      <Link
+        to="/password-change-requests"
+        className="bg-black w-full text-white py-3 px-4 rounded-md text-xl font-semibold text-center"
+      >
+        Password Change Requests
+      </Link>
       
     </div>
   );
