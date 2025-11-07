@@ -23,7 +23,7 @@ const App = () => {
   if (authLoading) return <PageLoader />;
 
   return (
-    <div>
+    <div className="min-h-screen">
       <Header />
       <Routes>
         {/* Protected Routes - Only logged-in users can access */}
