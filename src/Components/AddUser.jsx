@@ -164,6 +164,7 @@ const AddUser = () => {
                   onChange={handleChangeInput}
                   className="w-full px-5 py-4 border border-gray-700/50 rounded-xl focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all duration-300 bg-gray-800/50 backdrop-blur-sm text-gray-100 hover:bg-gray-800/70 focus:bg-gray-800/70 text-sm sm:text-base"
                 >
+                  <option value="Basic">Subscription Type: Basic</option>
                   <option value="Premium">Subscription Type: Premium</option>
                 </select>
               </div>
